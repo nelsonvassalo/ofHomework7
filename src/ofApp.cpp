@@ -20,10 +20,7 @@ void wave::setup(){
     
     color.set(ofRandom(255),ofRandom(255),ofRandom(255));
     
-    fbo.allocate(ofGetWindowWidth(),ofGetWindowHeight(), GL_RGBA32F);
-    fbo.begin();
-    ofClear(255,255,255,0);
-    fbo.end();
+   
 }
 
 
@@ -38,20 +35,15 @@ void wave::update(){
     scale= (1-ofNoise(time))*weight;
 
     
-    moveX= ofSignedNoise(time*a)*ofRandom(1,10);
-    moveY= ofSignedNoise(time*b)*ofRandom(1,10);
-    moveZ= ofSignedNoise(time*c)*ofRandom(1,10);
+    moveX= ofSignedNoise(time*a)*ofRandom(7,15);
+    moveY= ofSignedNoise(time*b)*ofRandom(7,15);
+    moveZ= ofSignedNoise(time*c)*ofRandom(7,15);
     
     loc+= ofPoint(moveX, moveY,moveZ);
 }
 
 void wave::draw(){
-    ofBackground(255);
-    
-    fbo.begin();
-    
-    ofSetColor(255,255,255, 1);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+
     
     ofPushMatrix();
     ofTranslate(loc.x, loc.y, loc.z);
@@ -65,19 +57,22 @@ void wave::draw(){
     
  
     
-    ofSetColor(255);
-       fbo.end();
-    fbo.draw(0,0);
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+//    fbo.allocate(ofGetWindowWidth(),ofGetWindowHeight(), GL_RGBA32F);
+    fbo.begin();
+    
     for(int i=0; i<5; i++){
         wave waveyBaby;
         waveyBaby.setup();
         wavy.push_back(waveyBaby);
         
         }
+    ofClear(255,255,255,0);
+    fbo.end();
 }
 
 //--------------------------------------------------------------
@@ -100,9 +95,20 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     //wavy.draw();
+    fbo.allocate(ofGetWindowWidth(),ofGetWindowHeight(), GL_RGBA32F);
+
+    ofBackground(255);
+    
+    fbo.begin();
+    
+    ofSetColor(255,255,255, 1);
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     for(int i=0; i<wavy.size(); i++){
         wavy[i].draw();
     }
+    ofSetColor(255);
+    fbo.end();
+    fbo.draw(0,0);
 }
 
 //--------------------------------------------------------------
